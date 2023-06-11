@@ -1,70 +1,61 @@
 {% extends 'base_auth.html' %}
 {% load static %}
-{% block title %}Register {% endblock title %}
-
-
+{% block title %} Register {%endblock %} 
 {% block content %}
-
 <div class="row">
   <div class="col-md-4"></div>
   <div class="col-md-4">
     <div class="card mt-5">
-
-
       <div class="card-body">
         <div class="card-title py-3">
           <h4>Register for a free account</h4>
         </div>
-        <form action="" method="post">
+        <form class="row g-3" action="" method="post">
           {% csrf_token %}
-          <div class="form-group">
+          <div class="col-12">
+            <label class="form-label">Username</label>
             <input
               type="text"
-              name="username"
-              placeholder="username"
+              class="form-control"
               id="usernameField"
-              value="{{fieldValues.username}}"
-              class="form-control form-control-sm"
+              value="{{ fieldValues.username }}"
+              placeholder="Username"
             />
           </div>
-          <div class="invalid_feedback invalid-feedback" style="display:none">
-          </div>
+          <div
+            class="invalid_feedback invalid-feedback"
+            style="display: none"
+          ></div>
           <p class="text-sm text-success usernameSuccessOutput"></p>
-          <div class="form-group">
+
+          <div class="col-md-12">
+            <label class="form-label">Email</label>
             <input
               type="email"
-              name="email"
+              class="form-control"
               placeholder="Email"
-              class="form-control form-control-sm"
               id="emailField"
-
-              value="{{fieldValues.email}}"
+              value="{{ fieldValues.email }}"
             />
           </div>
+          <div
+            class="emailFeedBackArea invalid-feedback"
+            style="display: none"
+          ></div>
+          <div class="col-md-12">
+            <label class="form-label">Password</label>
+            <input type="password" class="form-control" placeholder="Password"id="passwordField" />
+            <small class="float-end py-3 showPasswordToggle">SHOW</small>
+          </div>
 
-          <div class="emailFeedBackArea invalid-feedback" style="display:none">
+          <div class="col-12">
+            <button type="submit" class="btn btn-primary">Register</button>
           </div>
-          <div class="form-group">
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              class="form-control form-control-sm"
-              id="passwordField"
-            />
-            <small class="float-right py-3 showPasswordToggle">SHOW</small>
-          </div>
-          <input type="submit" value="Register" class="btn btn-block btn-primary submit-btn" />
         </form>
-
-      </div>
-
       </div>
     </div>
   </div>
   <div class="col-md-4"></div>
 </div>
-
-{% comment %} <script src="{% static 'js/register.js' %}"></script> {% endcomment %}
-
-{% endblock content %}
+<script src="{% static 'assets/custom/js/register.js' %} "></script>
+{% endblock %}
