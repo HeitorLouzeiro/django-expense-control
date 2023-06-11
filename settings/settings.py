@@ -41,6 +41,7 @@ INSTALLED_APPS = [
 
     # apps
     'expense',
+    'authentication',
 ]
 
 MIDDLEWARE = [
