@@ -1,0 +1,17 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{% block title %} {% endblock %}| Expense</title>
+    {% include 'partials/_head.html' %}
+  </head>
+  <body>
+    <main>
+      {% block content %} 
+      {% endblock %}
+    </main>
+    {% include 'partials/_footer.html' %}
+  </body>
+</html>
