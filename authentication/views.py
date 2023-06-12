@@ -29,10 +29,10 @@ class EmailValidationView(View):
         email = data['email']
 
         if not validate_email(email):
-            return JsonResponse({'email_error': 'Email is invalid'}, status=400)
+            return JsonResponse({'email_error': 'Email is invalid'}, status=400)  # noqa
 
         if User.objects.filter(email=email).exists():
-            return JsonResponse({'email_error': 'Email is already taken'}, status=409)
+            return JsonResponse({'email_error': 'Email is already taken'}, status=409)  # noqa
 
         return JsonResponse({'username_valid': True})
 
