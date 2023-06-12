@@ -1,5 +1,6 @@
 import json
 
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.shortcuts import render
@@ -39,4 +40,10 @@ class EmailValidationView(View):
 
 class RegistrationView(View):
     def get(self, request):
+        return render(request, 'authentication/pages/register.html')
+
+    def post(self, request):
+        print(request.POST)
+        print(request.body)
+        messages.success(request, 'Account created successfully')
         return render(request, 'authentication/pages/register.html')
