@@ -1,57 +1,81 @@
 {% extends 'base.html' %}
-{% block title %}
-  Home
-{% endblock %}
-{% block content%}
+{% block title %} Home {% endblock %} 
+{% block content %}
 <div class="container mt-4">
-    <div class="row">
-        <div class="col-md-10">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item">
-                        <a href="#">Home</a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">My Expense</li>
-                </ol>
-            </nav>
-        </div>
-        <div class="col-md-2">
-            <a href="{% url 'expense:addExpense' %}" class="btn btn-primary">Add Expense</a>
-        </div>
+  <div class="row">
+    <div class="col-md-10">
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="#">Home</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">My Expense</li>
+        </ol>
+      </nav>
     </div>
+    <div class="col-md-2">
+      <a href="{% url 'expense:addExpense' %}" class="btn btn-primary"
+        >Add Expense</a
+      >
+    </div>
+  </div>
 </div>
 
 <div class="container mt-4">
-    <table class="table table-striped table-hover">
-  <thead>
-    <tr>
+  <table class="table table-striped table-hover">
+    <thead>
+      <tr>
         <th>Amount ({{currency}})</th>
         <th>Category</th>
         <th>Description</th>
         <th>Date</th>
         <th></th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for expense in expenses %}
-    <tr>
+      </tr>
+    </thead>
+    <tbody>
+      {% for expense in page_obj %}
+      <tr>
         <td>{{expense.amount}}</td>
         <td>{{expense.category}}</td>
         <td>{{expense.description}}</td>
         <td>{{expense.date}}</td>
         <td>
-            <a href="{% url 'expense:editExpense' expense.id %}" class="btn btn-primary btn-sm">Edit</a>
-            <a href="{% url 'expense:deleteExpense' expense.id %}" class="btn btn-danger btn-sm">Delete</a>
+          <a
+            href="{% url 'expense:editExpense' expense.id %}"
+            class="btn btn-primary btn-sm"
+            >Edit</a
+          >
+          <a
+            href="{% url 'expense:deleteExpense' expense.id %}"
+            class="btn btn-danger btn-sm"
+            >Delete</a
+          >
         </td>
+      </tr>
 
-    </tr>
-    {%empty%}
-    <tr>
+      {%empty%}
+      <tr>
         <td colspan="5">No Expense Found</td>
-    </tr>
-    {% endfor %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% if page_obj %}
+  <div class="container mt-4">
+    showing page {{page_obj.number}} of {{page_obj.paginator.num_pages}} pages
+  </div>
 
-  </tbody>
-</table>
+  <ul class="pagination align-right float-right mr-auto">
+    {% if page_obj.has_previous %}
+    <li {% if page_obj.number == 1 %} class="page-item active" {% endif %}><a class="page-link" href="?page=1">&laquo; 1</a></li>
+    <li class="page-item"> <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+    {% endif %}
+
+    {% if page_obj.has_next %}
+    <li class="page-item"> <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+    <li class="page-item"> <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages}} &raquo;</a></li>
+    {% endif %}
+    </ul>
+    {% endif %}
 </div>
 {% endblock %}

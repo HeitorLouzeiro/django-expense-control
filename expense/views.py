@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 from django.shortcuts import redirect, render
 
 from .models import Category, Expense
@@ -11,9 +12,14 @@ from .models import Category, Expense
 def home(request):
     categories = Category.objects.filter(user=request.user)
     expenses = Expense.objects.filter(user=request.user)
+    paginator = Paginator(expenses, 10)
+    page_number = request.GET.get('page')
+    page_obj = Paginator.get_page(paginator, page_number)
+
     context = {
         'categories': categories,
         'expenses': expenses,
+        'page_obj': page_obj,
     }
 
     return render(request, 'expense/pages/home.html', context)
