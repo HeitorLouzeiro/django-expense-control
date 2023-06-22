@@ -51,3 +51,51 @@ def addExpense(request):
         messages.success(request, 'Expense saved successfully')
 
         return redirect('expense:home')
+
+
+def editExpense(request, id):
+    template_name = 'expense/pages/editExpense.html'
+    expense = Expense.objects.get(pk=id)
+    categories = Category.objects.filter(user=request.user)
+
+    context = {
+        'expense': expense,
+        'values': expense,
+        'categories': categories
+    }
+    if request.method == 'GET':
+        return render(request, template_name, context)
+
+    if request.method == 'POST':
+        amount = request.POST['amount']
+
+        if not amount:
+            messages.error(request, 'Amount is required')
+            return render(request, template_name, context)
+
+        description = request.POST['description']
+        date = request.POST['expense_date']
+        category = request.POST['category']
+
+        category = Category.objects.get(id=category)
+
+        if not description:
+            messages.error(request, 'description is required')
+            return render(request, template_name, context)
+
+        expense.amount = amount
+        expense.date = date
+        expense.category = category
+        expense.description = description
+        expense.save()
+        messages.success(request, 'Expense updated successfully')
+
+        return redirect('expense:home')
+
+
+def deleteExpense(request, id):
+    expense = Expense.objects.get(pk=id)
+    expense.delete()
+    messages.success(request, 'Expense deleted successfully')
+
+    return redirect('expense:home')
