@@ -1,11 +1,38 @@
+import json
+
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
+from django.db.models import Q
+from django.http import JsonResponse
 from django.shortcuts import redirect, render
+
+from userpreferences.models import UserPreference
 
 from .models import Category, Expense
 
 # Create your views here.
+
+
+def getCategory(request, category_id):
+    categories = Category.objects.get(id=category_id, user=request.user)
+    data = {
+        'name': categories.name,
+    }
+    return JsonResponse(data)
+
+
+def searchExpense(request):
+    if request.method == 'POST':
+        search_str = json.loads(request.body).get('searchText')
+        expenses = Expense.objects.filter(
+            Q(amount__istartswith=search_str) | Q(date__istartswith=search_str) |
+            Q(description__icontains=search_str) | Q(
+                category__name__icontains=search_str),
+            user=request.user
+        )
+        data = expenses.values()
+        return JsonResponse(list(data), safe=False)
 
 
 @login_required(login_url='authentication:login', redirect_field_name='next')
@@ -16,10 +43,13 @@ def home(request):
     page_number = request.GET.get('page')
     page_obj = Paginator.get_page(paginator, page_number)
 
+    currency = UserPreference.objects.get(user=request.user).currency
+
     context = {
         'categories': categories,
         'expenses': expenses,
         'page_obj': page_obj,
+        'currency': currency
     }
 
     return render(request, 'expense/pages/home.html', context)
