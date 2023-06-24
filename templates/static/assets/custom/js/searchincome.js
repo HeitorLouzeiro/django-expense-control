@@ -15,7 +15,7 @@ searchField.addEventListener("keyup", (e) => {
         paginationContainer.style.display = "none";
         console.log("searchValue", searchValue);
         tbody.innerHTML = "";
-        fetch("search-expenses/", {
+        fetch("search-incomes/", {
             body: JSON.stringify({ searchText: searchValue }),
             method: "POST",
         })
@@ -31,18 +31,18 @@ searchField.addEventListener("keyup", (e) => {
             }else{
                 data.forEach((item) => {
                     // Fazer uma nova solicitação para obter as informações da categoria
-                    fetch(`get-category/${item.category_id}/`)
+                    fetch(`get-source/${item.source_id}/`)
                       .then((res) => res.json())
-                      .then((category) => {
+                      .then((source) => {
                         tbody.innerHTML += `
                             <tr>
                               <td>${item.amount}</td>
-                              <td>${category.name}</td>
+                              <td>${source.name}</td>
                               <td>${item.description}</td>
                               <td>${item.date}</td>
                               <td>
-                                <a href="edit/expense/${item.id}" class="btn btn-primary btn-sm">Edit</a>
-                                <a href="delete/expense/${item.id}" class="btn btn-danger btn-sm">Delete</a>
+                                <a href="edit/income/${item.id}/" class="btn btn-primary btn-sm">Edit</a>
+                                <a href="delete/income/${item.id}/" class="btn btn-danger btn-sm">Delete</a>
                               </td>
                             </tr>`;
                       });
