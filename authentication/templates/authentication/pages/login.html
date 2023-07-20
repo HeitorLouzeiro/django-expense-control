@@ -42,10 +42,15 @@
               />
             </div>
           </div>
-          <input type="submit" value="Login" class="btn btn-block btn-primary submit-btn" />
+          <div class="row d-grid gap-2">
+            <input type="submit" value="Login" class="btn btn-primary submit-btn" />
+          </div>
         </form>
       </div>
-
+      <div class="d-grid">
+        <a href="{% url 'authentication:registration' %}" class="btn btn-light btn-login text-uppercase fw-bold">Register</a>
+    </div>
+      <span class="text-end">Forgot Password <a href="{% url 'authentication:request-password' %}">Reser it</a></span>
       </div>
     </div>
   </div>
