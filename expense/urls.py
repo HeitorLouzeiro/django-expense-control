@@ -14,4 +14,7 @@ urlpatterns = [
     path('search-expenses/', csrf_exempt(views.searchExpense), name='searchExpense'),
     path('get-category/<int:category_id>/',
          csrf_exempt(views.getCategory), name='getCategory'),
+    path('stats/expense-category-summary/', views.expenseCategorySummary,
+         name='expenseCategorySummary'),
+    path('stats/', views.statsView, name='stats'),
 ]

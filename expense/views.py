@@ -1,3 +1,4 @@
+import datetime
 import json
 
 from django.contrib import messages
@@ -89,6 +90,7 @@ def addExpense(request):
         return redirect('expense:home')
 
 
+@login_required(login_url='authentication:login', redirect_field_name='next')
 def editExpense(request, id):
     template_name = 'expense/pages/editExpense.html'
     expense = Expense.objects.get(pk=id)
@@ -129,9 +131,38 @@ def editExpense(request, id):
         return redirect('expense:home')
 
 
+@login_required(login_url='authentication:login', redirect_field_name='next')
 def deleteExpense(request, id):
     expense = Expense.objects.get(pk=id)
     expense.delete()
     messages.success(request, 'Expense deleted successfully')
 
     return redirect('expense:home')
+
+
+def expenseCategorySummary(request):
+    todays_date = datetime.date.today()
+    six_months_ago = todays_date - datetime.timedelta(days=30*6)
+    expenses = Expense.objects.filter(date__gte=six_months_ago,
+                                      date__lte=todays_date, user=request.user)
+    finalrep = {}
+
+    def get_expense_category_amount(category_id):
+        amount = 0
+        filtered_by_category = expenses.filter(category_id=category_id)
+
+        for item in filtered_by_category:
+            amount += item.amount
+
+        return amount
+
+    for expense in expenses:
+        category_id = expense.category.id
+        category_name = expense.category.name
+        finalrep[category_name] = get_expense_category_amount(category_id)
+
+    return JsonResponse({'expense_category_data': finalrep})
+
+
+def statsView(request):
+    return render(request, 'expense/pages/stats.html')
