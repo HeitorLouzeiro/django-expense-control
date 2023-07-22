@@ -1,11 +1,13 @@
+import csv
 import datetime
 import json
 
+import xlwt
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 
 from userpreferences.models import UserPreference
@@ -140,6 +142,7 @@ def deleteExpense(request, id):
     return redirect('expense:home')
 
 
+@login_required(login_url='authentication:login', redirect_field_name='next')
 def expenseCategorySummary(request):
     todays_date = datetime.date.today()
     six_months_ago = todays_date - datetime.timedelta(days=30*6)
@@ -164,5 +167,62 @@ def expenseCategorySummary(request):
     return JsonResponse({'expense_category_data': finalrep})
 
 
+@login_required(login_url='authentication:login', redirect_field_name='next')
 def statsView(request):
     return render(request, 'expense/pages/stats.html')
+
+
+@login_required(login_url='authentication:login', redirect_field_name='next')
+def exportCsv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=Expenses' + \
+        str(datetime.datetime.now())+'.csv'
+
+    # módulo usada para criar um objeto gravador CSV
+    writer = csv.writer(response)
+
+    # gravar linhas de dados no arquivo CSV
+    writer.writerow(['Amount', 'Description', 'Category', 'Date'])
+
+    expenses = Expense.objects.filter(user=request.user)
+
+    for expense in expenses:
+        writer.writerow([expense.amount, expense.description,
+                         expense.category, expense.date])
+
+    return response
+
+
+@login_required(login_url='authentication:login', redirect_field_name='next')
+def exportExcel(request):
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename=Expenses' + \
+        str(datetime.datetime.now())+'.xls'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Expenses')
+
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['Amount', 'Description', 'Category', 'Date']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    font_style = xlwt.XFStyle()
+
+    rows = Expense.objects.filter(user=request.user).values_list(
+        'amount', 'description', 'category', 'date')
+
+    for row in rows:
+        row_num += 1
+
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, str(row[col_num]), font_style)
+
+    wb.save(response)
+
+    return response
