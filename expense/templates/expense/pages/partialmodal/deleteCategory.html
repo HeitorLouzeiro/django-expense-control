@@ -1,0 +1,22 @@
+<div class="modal fade" id="deleteModal{{ category.id }}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="deleteModalLabel">Delete {{ category.name }}</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action={% url 'expense:deleteCategory' %} method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="category_id" value="{{category.id}}" />
+          <div class="modal-body">
+            <p>Are you sure you want to delete {{ category.name }}?</p>
+            <p>This action cannot be reversed.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-danger">Delete Data</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>

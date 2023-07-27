@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import HttpResponse, JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 
 from userpreferences.models import UserPreference
@@ -141,6 +141,63 @@ def deleteExpense(request, id):
     messages.success(request, 'Expense deleted successfully')
 
     return redirect('expense:home')
+
+
+@login_required(login_url='authentication:login', redirect_field_name='next')
+def Categories(request):
+    categories = Category.objects.filter(user=request.user)
+    return render(request, 'expense/pages/categories.html', {'categories': categories})
+
+
+@login_required(login_url='authentication:login', redirect_field_name='next')
+def addCategory(request):
+    if not request.POST:
+        raise Http404()
+
+    if request.method == 'POST':
+        name = request.POST['name']
+
+        if not name:
+            messages.error(request, 'Category is required')
+            return redirect('expense:categories')
+
+        Category.objects.create(user=request.user, name=name)
+        messages.success(request, 'Category saved successfully')
+
+        return redirect('expense:categories')
+
+
+@login_required(login_url='authentication:login', redirect_field_name='next')
+def editCategory(request):
+    if not request.POST:
+        raise Http404()
+
+    id = request.POST.get('category_id')
+
+    if request.method == 'POST':
+        category = Category.objects.get(pk=id, user=request.user)
+
+        if not category:
+            return HttpResponse('Invalid category')
+
+        category.name = request.POST['name']
+        category.save()
+        messages.success(request, 'Category updated successfully')
+
+        return redirect('expense:categories')
+
+
+@login_required(login_url='authentication:login', redirect_field_name='next')
+def deleteCategory(request):
+    if not request.POST:
+        raise Http404()
+
+    id = request.POST.get('category_id')
+    category = Category.objects.get(pk=id, user=request.user)
+    category.delete()
+    messages.success(request, 'Category deleted successfully')
+
+    return redirect('expense:categories')
 
 
 @login_required(login_url='authentication:login', redirect_field_name='next')

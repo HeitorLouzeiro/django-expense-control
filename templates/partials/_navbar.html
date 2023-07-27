@@ -29,6 +29,19 @@
           </li>
 
         <hr class="my-3" />
+        <ul class="nav flex-column">
+          <li class="nav-item">
+            <a class="nav-link d-flex align-items-center gap-2" href="{% url 'expense:categories' %}">
+              Category
+            </a>
+          </li>          
+          <li class="nav-item">
+            <a class="nav-link d-flex align-items-center gap-2" href="{% url 'userpreferences:preferences' %}">
+              Source
+            </a>
+          </li>
+        </ul>
+        <hr class="my-3" />
 
         <li class="nav-item">
           <a class="nav-link d-flex align-items-center gap-2" href="{% url 'userpreferences:preferences' %}">
