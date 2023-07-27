@@ -47,3 +47,26 @@
   .navbar .form-control {
     padding: .75rem 1rem;
   }
+
+  /*
+  * Charts
+  */
+
+.x_panel{
+  width: 100%;
+  padding: 10px 17px;
+  display: inline-block;
+
+}
+.x_content {
+  display: flex;
+  width: 100%;
+  padding: 0 5px 6px;
+  float: left;
+  margin-top: 5px;
+  justify-content: center;
+}
+canvas#myChart2{
+  height: 300px !important;
+  width: 300px !important;
+}

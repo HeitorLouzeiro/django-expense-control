@@ -16,7 +16,8 @@ urlpatterns = [
          csrf_exempt(views.getCategory), name='getCategory'),
     path('stats/expense-category-summary/', views.expenseCategorySummary,
          name='expenseCategorySummary'),
-    path('stats/', views.statsView, name='stats'),
+    path('stats/expense-category-line-summary/', views.expenseCategoryLineSummary,
+         name='expenseCategoryLineSummary'),
     path('export-csv/', views.exportCsv, name='exportCsv'),
     path('export-excel/', views.exportExcel, name='exportExcel'),
 ]

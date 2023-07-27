@@ -40,13 +40,30 @@
           <div class="col">
             <a class="btn btn-outline-primary" href="{% url 'expense:exportCsv' %}">Export CSV</a>
           </div>        
-          
+
           <div class="col">
             <a class="btn btn-outline-secondary" href="{% url 'expense:exportExcel' %}">Export Excel</a>
           </div>        
         </div>
-
-
+      </div>
+    </div>
+  </div>
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="x_panel">
+          <div class="x_content">
+            <canvas id="myChart"></canvas>
+          </div>
+        </div>
+  
+      </div>    
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="x_panel">
+          <div class="x_content">
+            <canvas id="myChart2"></canvas>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -58,7 +75,7 @@
         <thead>
           <tr>
             <th>Amount ({{currency}})</th>
-            <th>Category</th>
+            <th class="d-none d-md-table-cell">Category</th>
             <th>Description</th>
             <th>Date</th>
             <th></th>
@@ -68,7 +85,7 @@
           {% for expense in page_obj %}
           <tr>
             <td>{{expense.amount}}</td>
-            <td>{{expense.category}}</td>
+            <td class="d-none d-md-table-cell">{{expense.category}}</td>
             <td>{{expense.description}}</td>
             <td>{{expense.date}}</td>
             <td>
@@ -139,4 +156,5 @@
     {% endif %}
   </div>
   <script src="{% static 'assets/custom/js/searchexpense.js' %}"></script>
+  <script src="{% static 'assets/custom/js/statsExpense.js' %}"></script>
 {% endblock %}

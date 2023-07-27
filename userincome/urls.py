@@ -14,4 +14,8 @@ urlpatterns = [
     path('search-incomes/', csrf_exempt(views.searchIncome), name='searchIncome'),
     path('get-source/<int:source_id>/',
          csrf_exempt(views.getSource), name='getSource'),
+    path('stats/income-source-line-summary/', views.expenseSourceLineSummary,
+         name='incomeSourceLineSummary'),
+    path('stats/income-source-summary/', views.expenseSourceSummary,
+         name='incomeSourceSummary'),
 ]

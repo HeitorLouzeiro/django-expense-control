@@ -1,3 +1,4 @@
+import calendar
 import csv
 import datetime
 import json
@@ -143,6 +144,46 @@ def deleteExpense(request, id):
 
 
 @login_required(login_url='authentication:login', redirect_field_name='next')
+def expenseCategoryLineSummary(request):
+    todays_date = datetime.date.today()
+    five_months_ago = todays_date - datetime.timedelta(days=30 * 5)
+    # date__gte = greater than or equal to, (maiores ou iguais)
+    # date__lte = less than or equal to, (menores ou iguais)
+    expenses = Expense.objects.filter(
+        date__gte=five_months_ago, date__lte=todays_date, user=request.user)
+
+    finalrep = {}
+    # Calculate the expenses for each month and store them in finalrep dictionary
+    for expense in expenses:
+        month_year = f'{expense.date.year}-{expense.date.month:02}'
+        finalrep[month_year] = finalrep.get(month_year, 0) + expense.amount
+
+    labels = []
+    current_month = five_months_ago.month
+    current_year = five_months_ago.year
+
+    for i in range(6):  # Include the current month + 5 previous months
+        month_name = calendar.month_name[current_month]
+        labels.append(f'{month_name} {current_year}')
+        if current_month == 12:
+            current_month = 1
+            current_year += 1
+        else:
+            current_month += 1
+
+    data = []
+
+    for label in labels:
+        month, year = label.split()
+        month_number = list(calendar.month_name).index(month)
+        month_year = f'{year}-{month_number:02}'
+        amount = finalrep.get(month_year, 0)
+        data.append(amount)
+
+    return JsonResponse({'labels': labels, 'data': data})
+
+
+@login_required(login_url='authentication:login', redirect_field_name='next')
 def expenseCategorySummary(request):
     todays_date = datetime.date.today()
     six_months_ago = todays_date - datetime.timedelta(days=30*6)
@@ -165,11 +206,6 @@ def expenseCategorySummary(request):
         finalrep[category_name] = get_expense_category_amount(category_id)
 
     return JsonResponse({'expense_category_data': finalrep})
-
-
-@login_required(login_url='authentication:login', redirect_field_name='next')
-def statsView(request):
-    return render(request, 'expense/pages/stats.html')
 
 
 @login_required(login_url='authentication:login', redirect_field_name='next')

@@ -35,7 +35,26 @@
           </form>
       </div>
     </div>
+  </div>
 
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="x_panel">
+          <div class="x_content">
+            <canvas id="myChart"></canvas>
+          </div>
+        </div>
+  
+      </div>    
+      <div class="col-md-6 col-sm-6 col-xs-12">
+        <div class="x_panel">
+          <div class="x_content">
+            <canvas id="myChart2"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="container mt-4">
@@ -126,4 +145,5 @@
     {% endif %}
   </div>
   <script src="{% static 'assets/custom/js/searchIncome.js' %}"></script>
+  <script src="{% static 'assets/custom/js/statsIncome.js' %}"></script>
 {% endblock %}

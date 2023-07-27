@@ -1,3 +1,5 @@
+import calendar
+import datetime
 import json
 
 from django.contrib import messages
@@ -14,6 +16,7 @@ from .models import Source, UserIncome
 # Create your views here.
 
 
+@login_required(login_url='authentication:login', redirect_field_name='next')
 def getSource(request, source_id):
     sources = Source.objects.get(id=source_id, user=request.user)
     data = {
@@ -22,6 +25,7 @@ def getSource(request, source_id):
     return JsonResponse(data)
 
 
+@login_required(login_url='authentication:login', redirect_field_name='next')
 def searchIncome(request):
     if request.method == 'POST':
         search_str = json.loads(request.body).get('searchText')
@@ -89,6 +93,7 @@ def addIncome(request):
         return redirect('income:home')
 
 
+@login_required(login_url='authentication:login', redirect_field_name='next')
 def editIncome(request, id):
     template_name = 'income/pages/editIncome.html'
     income = UserIncome.objects.get(pk=id)
@@ -129,9 +134,75 @@ def editIncome(request, id):
         return redirect('income:home')
 
 
+@login_required(login_url='authentication:login', redirect_field_name='next')
 def deleteIncome(request, id):
     income = UserIncome.objects.get(pk=id)
     income.delete()
     messages.success(request, 'Income deleted successfully')
 
     return redirect('income:home')
+
+
+@login_required(login_url='authentication:login', redirect_field_name='next')
+def expenseSourceLineSummary(request):
+    todays_date = datetime.date.today()
+    five_months_ago = todays_date - datetime.timedelta(days=30 * 5)
+    # date__gte = greater than or equal to, (maiores ou iguais)
+    # date__lte = less than or equal to, (menores ou iguais)
+    incomes = UserIncome.objects.filter(
+        date__gte=five_months_ago, date__lte=todays_date, user=request.user)
+
+    finalrep = {}
+    # Calculate the incomes for each month and store them in finalrep dictionary
+    for income in incomes:
+        month_year = f'{income.date.year}-{income.date.month:02}'
+        finalrep[month_year] = finalrep.get(month_year, 0) + income.amount
+
+    labels = []
+    current_month = five_months_ago.month
+    current_year = five_months_ago.year
+
+    for i in range(6):  # Include the current month + 5 previous months
+        month_name = calendar.month_name[current_month]
+        labels.append(f'{month_name} {current_year}')
+        if current_month == 12:
+            current_month = 1
+            current_year += 1
+        else:
+            current_month += 1
+
+    data = []
+
+    for label in labels:
+        month, year = label.split()
+        month_number = list(calendar.month_name).index(month)
+        month_year = f'{year}-{month_number:02}'
+        amount = finalrep.get(month_year, 0)
+        data.append(amount)
+
+    return JsonResponse({'labels': labels, 'data': data})
+
+
+@login_required(login_url='authentication:login', redirect_field_name='next')
+def expenseSourceSummary(request):
+    todays_date = datetime.date.today()
+    six_months_ago = todays_date - datetime.timedelta(days=30*6)
+    incomes = UserIncome.objects.filter(date__gte=six_months_ago,
+                                        date__lte=todays_date, user=request.user)
+    finalrep = {}
+
+    def get_income_source_amount(source_id):
+        amount = 0
+        filtered_by_source = incomes.filter(source_id=source_id)
+
+        for item in filtered_by_source:
+            amount += item.amount
+
+        return amount
+
+    for income in incomes:
+        source_id = income.source.id
+        source_name = income.source.name
+        finalrep[source_name] = get_income_source_amount(source_id)
+
+    return JsonResponse({'income_source_data': finalrep})
