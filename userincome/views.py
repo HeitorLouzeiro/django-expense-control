@@ -1,12 +1,14 @@
 import calendar
+import csv
 import datetime
 import json
 
+import xlwt
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import JsonResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 
 from userpreferences.models import UserPreference
@@ -206,3 +208,59 @@ def expenseSourceSummary(request):
         finalrep[source_name] = get_income_source_amount(source_id)
 
     return JsonResponse({'income_source_data': finalrep})
+
+
+@login_required(login_url='authentication:login', redirect_field_name='next')
+def exportCsv(request):
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename=Incomes' + \
+        str(datetime.datetime.now())+'.csv'
+
+    # módulo usada para criar um objeto gravador CSV
+    writer = csv.writer(response)
+
+    # gravar linhas de dados no arquivo CSV
+    writer.writerow(['Amount', 'Description', 'Source', 'Date'])
+
+    incomes = UserIncome.objects.filter(user=request.user)
+
+    for income in incomes:
+        writer.writerow([income.amount, income.description,
+                         income.source, income.date])
+
+    return response
+
+
+@login_required(login_url='authentication:login', redirect_field_name='next')
+def exportExcel(request):
+    response = HttpResponse(content_type='application/ms-excel')
+    response['Content-Disposition'] = 'attachment; filename=Incomes' + \
+        str(datetime.datetime.now())+'.xls'
+
+    wb = xlwt.Workbook(encoding='utf-8')
+    ws = wb.add_sheet('Expenses')
+
+    row_num = 0
+
+    font_style = xlwt.XFStyle()
+    font_style.font.bold = True
+
+    columns = ['Amount', 'Description', 'Source', 'Date']
+
+    for col_num in range(len(columns)):
+        ws.write(row_num, col_num, columns[col_num], font_style)
+
+    font_style = xlwt.XFStyle()
+
+    rows = UserIncome.objects.filter(user=request.user).values_list(
+        'amount', 'description', 'source', 'date')
+
+    for row in rows:
+        row_num += 1
+
+        for col_num in range(len(row)):
+            ws.write(row_num, col_num, str(row[col_num]), font_style)
+
+    wb.save(response)
+
+    return response

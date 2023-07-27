@@ -20,22 +20,34 @@
     </div>
   </div>
 
-  <div>
-    <div class="container mt-4">
-      <div class="row">
-          <form action="{% url 'income:searchIncome' %}" method="POST">
-            <div class="input-group mb-3">
-              <input
-                type="text"
-                class="form-control"
-                id="searchField"
-                placeholder="Search Income"
-              />
-            </div>
-          </form>
+
+  <div class="container mt-4">
+    <div class="row">
+        <form action="{% url 'income:searchIncome' %}" method="POST">
+          <div class="input-group mb-3">
+            <input
+              type="text"
+              class="form-control"
+              id="searchField"
+              placeholder="Search Income"
+            />
+          </div>
+        </form>
+    </div>
+    <div class="container text-center">
+      <div class="row align-items-center">
+
+        <div class="col">
+          <a class="btn btn-outline-primary" href="{% url 'income:exportCsv' %}">Export CSV</a>
+        </div>        
+
+        <div class="col">
+          <a class="btn btn-outline-secondary" href="{% url 'income:exportExcel' %}">Export Excel</a>
+        </div>        
       </div>
     </div>
   </div>
+
 
   <div class="container mt-4">
     <div class="row">

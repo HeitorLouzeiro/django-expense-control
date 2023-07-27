@@ -20,34 +20,34 @@
     </div>
   </div>
 
-  <div>
-    <div class="container mt-4">
-      <div class="row">
-          <form action="{% url 'expense:searchExpense' %}" method="POST">
-            <div class="input-group mb-3">
-              <input
-                type="text"
-                class="form-control"
-                id="searchField"
-                placeholder="Search Expense"
-              />
-            </div>
-          </form>
-      </div>
-      <div class="container text-center">
-        <div class="row align-items-center">
+  <div class="container mt-4">
+    <div class="row">
+        <form action="{% url 'expense:searchExpense' %}" method="POST">
+          <div class="input-group mb-3">
+            <input
+              type="text"
+              class="form-control"
+              id="searchField"
+              placeholder="Search Expense"
+            />
+          </div>
+        </form>
+    </div>
 
-          <div class="col">
-            <a class="btn btn-outline-primary" href="{% url 'expense:exportCsv' %}">Export CSV</a>
-          </div>        
+    <div class="container text-center">
+      <div class="row align-items-center">
 
-          <div class="col">
-            <a class="btn btn-outline-secondary" href="{% url 'expense:exportExcel' %}">Export Excel</a>
-          </div>        
-        </div>
+        <div class="col">
+          <a class="btn btn-outline-primary" href="{% url 'expense:exportCsv' %}">Export CSV</a>
+        </div>        
+
+        <div class="col">
+          <a class="btn btn-outline-secondary" href="{% url 'expense:exportExcel' %}">Export Excel</a>
+        </div>        
       </div>
     </div>
   </div>
+
   <div class="container mt-4">
     <div class="row">
       <div class="col-md-6 col-sm-6 col-xs-12">

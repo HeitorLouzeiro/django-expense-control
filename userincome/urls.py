@@ -18,4 +18,6 @@ urlpatterns = [
          name='incomeSourceLineSummary'),
     path('stats/income-source-summary/', views.expenseSourceSummary,
          name='incomeSourceSummary'),
+    path('export-csv/', views.exportCsv, name='exportCsv'),
+    path('export-excel/', views.exportExcel, name='exportExcel'),
 ]
