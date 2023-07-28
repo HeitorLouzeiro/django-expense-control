@@ -161,6 +161,10 @@ def addCategory(request):
             messages.error(request, 'Category is required')
             return redirect('expense:categories')
 
+        if Category.objects.filter(user=request.user, name=name).exists():
+            messages.error(request, 'Category already exists')
+            return redirect('expense:categories')
+
         Category.objects.create(user=request.user, name=name)
         messages.success(request, 'Category saved successfully')
 
@@ -178,7 +182,12 @@ def editCategory(request):
         category = Category.objects.get(pk=id, user=request.user)
 
         if not category:
-            return HttpResponse('Invalid category')
+            messages.error(request, 'Category not found')
+            return redirect('expense:categories')
+
+        if Category.objects.filter(user=request.user, name=name).exists():
+            messages.error(request, 'Category already exists')
+            return redirect('expense:categories')
 
         category.name = request.POST['name']
         category.save()
