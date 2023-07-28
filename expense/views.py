@@ -49,6 +49,11 @@ def home(request):
 
     currency = UserPreference.objects.get(user=request.user).currency
 
+    if not categories.exists():
+        messages.info(
+            request, 'You have not created any category yet. Please create a category first')
+        return redirect('expense:categories')
+
     context = {
         'categories': categories,
         'expenses': expenses,
@@ -76,6 +81,7 @@ def addExpense(request):
         if not amount:
             messages.error(request, 'Amount is required')
             return render(request, template_name, context)
+
         description = request.POST['description']
         date = request.POST['expense_date']
         category = request.POST['category']
@@ -177,6 +183,7 @@ def editCategory(request):
         raise Http404()
 
     id = request.POST.get('category_id')
+    name = request.POST.get('name')
 
     if request.method == 'POST':
         category = Category.objects.get(pk=id, user=request.user)
@@ -189,7 +196,7 @@ def editCategory(request):
             messages.error(request, 'Category already exists')
             return redirect('expense:categories')
 
-        category.name = request.POST['name']
+        category.name = name
         category.save()
         messages.success(request, 'Category updated successfully')
 

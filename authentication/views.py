@@ -103,8 +103,9 @@ class RegistrationView(View):
                 )
 
                 EmailThread(email).start()
-                messages.success(request, 'Account created successfully')
-                return render(request, 'authentication/pages/register.html')
+                messages.success(request, 'Account created successfully, verify your email to activate account.')  # noqa
+
+                return redirect('authentication:login')
             else:
                 messages.error(request, 'Email is already taken')
                 return render(request, 'authentication/pages/register.html')

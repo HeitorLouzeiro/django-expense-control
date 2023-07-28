@@ -51,6 +51,11 @@ def home(request):
 
     currency = UserPreference.objects.get(user=request.user).currency
 
+    if not source:
+        messages.error(
+            request, 'You have not added any source yet. Please add a source first.')
+        return redirect('income:source')
+
     context = {
         'source': source,
         'incomes': incomes,
@@ -78,6 +83,7 @@ def addIncome(request):
         if not amount:
             messages.error(request, 'Amount is required')
             return render(request, template_name, context)
+
         description = request.POST['description']
         date = request.POST['income_date']
         source = request.POST['source']
@@ -182,16 +188,17 @@ def editSource(request):
 
     if request.method == 'POST':
         source = Source.objects.get(pk=id, user=request.user)
+        name = request.POST['name']
 
         if not request.POST['name']:
             messages.error(request, 'Source is required')
             return redirect('income:source')
 
-        if Source.objects.filter(name=request.POST['name']).exists():
+        if Source.objects.filter(name=name).exists():
             messages.error(request, 'Source already exists')
             return redirect('income:source')
 
-        source.name = request.POST['name']
+        source.name = name
         source.save()
         messages.success(request, 'Source updated successfully')
 
