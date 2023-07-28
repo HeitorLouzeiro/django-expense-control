@@ -1,0 +1,45 @@
+{% extends 'base.html' %} {% block title %}Sources{% endblock title %} 
+{%block content %}
+    <div class="container mt-4">
+    <div class="row">
+        <div class="col-md-10">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="#">Home</a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">
+                My Sources
+            </li>
+            </ol>
+        </nav>
+        </div>
+        <div class="col-md-2">
+            {% include 'income/pages/partialmodal/createSource.html' %}
+        </div>
+    </div>
+    </div>
+
+    <div class="container mt-4">
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            {% for source in sources %}
+            <div class="col">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ source.name }}</h5>
+                        <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editModal{{ source.id }}">Edit</button>
+                        <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{ source.id }}">Delete</button>
+                    </div>
+                </div>
+            </div>
+            {% include 'income/pages/partialmodal/editSource.html' %}
+            {% include 'income/pages/partialmodal/deleteSource.html' %}
+            {% empty %}
+            <h1>
+                No Sources.
+            </h1>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock content %}

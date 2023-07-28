@@ -8,7 +8,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.http import HttpResponse, JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect, render
 
 from userpreferences.models import UserPreference
@@ -143,6 +143,73 @@ def deleteIncome(request, id):
     messages.success(request, 'Income deleted successfully')
 
     return redirect('income:home')
+
+
+@login_required(login_url='authentication:login', redirect_field_name='next')
+def Sources(request):
+    sources = Source.objects.filter(user=request.user)
+    return render(request, 'income/pages/source.html', {'sources': sources})
+
+
+@login_required(login_url='authentication:login', redirect_field_name='next')
+def AddSource(request):
+    if not request.POST:
+        raise Http404()
+
+    if request.method == 'POST':
+        name = request.POST['name']
+
+        if not name:
+            messages.error(request, 'Source is required')
+            return redirect('income:source')
+
+        if Source.objects.filter(name=name).exists():
+            messages.error(request, 'Source already exists')
+            return redirect('income:source')
+
+        Source.objects.create(user=request.user, name=name)
+        messages.success(request, 'Source saved successfully')
+
+        return redirect('income:source')
+
+
+@login_required(login_url='authentication:login', redirect_field_name='next')
+def editSource(request):
+    if not request.POST:
+        raise Http404()
+
+    id = request.POST.get('source_id')
+
+    if request.method == 'POST':
+        source = Source.objects.get(pk=id, user=request.user)
+
+        if not request.POST['name']:
+            messages.error(request, 'Source is required')
+            return redirect('income:source')
+
+        if Source.objects.filter(name=request.POST['name']).exists():
+            messages.error(request, 'Source already exists')
+            return redirect('income:source')
+
+        source.name = request.POST['name']
+        source.save()
+        messages.success(request, 'Source updated successfully')
+
+        return redirect('income:source')
+
+
+@login_required(login_url='authentication:login', redirect_field_name='next')
+def deleteSource(request):
+    if not request.POST:
+        raise Http404()
+
+    id = request.POST.get('source_id')
+
+    source = Source.objects.get(pk=id, user=request.user)
+    source.delete()
+    messages.success(request, 'Source deleted successfully')
+
+    return redirect('income:source')
 
 
 @login_required(login_url='authentication:login', redirect_field_name='next')

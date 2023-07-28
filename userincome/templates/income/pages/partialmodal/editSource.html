@@ -1,0 +1,26 @@
+
+<!-- Modal -->
+<div class="modal fade" id="editModal{{ source.id }}" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="editModalLabel">Edit {{ source.name }}</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form action={% url 'income:editSource' %} method="POST">
+        {% csrf_token %}
+        <div class="modal-body">
+          <input type="hidden" name="source_id" value="{{source.id}}" />
+          <div class="form-floating mb-3">
+            <input type="text" class="form-control" name="name" id="floatingInput" placeholder="name" value="{{ source.name }}" />
+            <label for="floatingInput">Source</label>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-warning">Save changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

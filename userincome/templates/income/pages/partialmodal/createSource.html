@@ -1,0 +1,25 @@
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createModal">Add Source</button>
+<!-- Modal -->
+<div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="createModalLabel">Create Data</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form action={% url 'income:AddSource' %} method="POST">
+            {% csrf_token %}
+            <div class="form-floating mb-3">
+                <input type="text" class="form-control" id="floatingInput" name="name" placeholder="Category" />
+                <label for="floatingInput">Source</label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Save changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>

@@ -56,7 +56,7 @@ const renderChart2 = (data, labels) => {
       plugins: {
         title: {
           display: true,
-          text: "Categories",
+          text: "Source",
         },
       },
     },

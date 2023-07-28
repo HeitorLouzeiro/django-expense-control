@@ -1,0 +1,22 @@
+<div class="modal fade" id="deleteModal{{ source.id }}" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="deleteModalLabel">Delete {{ source.name }}</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form action={% url 'income:deleteSource' %} method="POST">
+          {% csrf_token %}
+          <input type="hidden" name="source_id" value="{{source.id}}" />
+          <div class="modal-body">
+            <p>Are you sure you want to delete {{ source.name }}?</p>
+            <p>This action cannot be reversed.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-danger">Delete Data</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
