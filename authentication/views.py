@@ -1,4 +1,5 @@
 import json
+import pdb
 import threading
 
 from django.contrib import messages
@@ -58,6 +59,7 @@ class EmailValidationView(View):
 
 class RegistrationView(View):
     def get(self, request):
+        # pdb.set_trace()
         return render(request, 'authentication/pages/register.html')
 
     def post(self, request):
