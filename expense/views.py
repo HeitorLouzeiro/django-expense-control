@@ -102,7 +102,7 @@ def addExpense(request):
 @login_required(login_url='authentication:login', redirect_field_name='next')
 def editExpense(request, id):
     template_name = 'expense/pages/editExpense.html'
-    expense = Expense.objects.get(pk=id)
+    expense = Expense.objects.get(pk=id, user=request.user)
     categories = Category.objects.filter(user=request.user)
 
     context = {
@@ -110,6 +110,7 @@ def editExpense(request, id):
         'values': expense,
         'categories': categories
     }
+
     if request.method == 'GET':
         return render(request, template_name, context)
 
@@ -142,7 +143,7 @@ def editExpense(request, id):
 
 @login_required(login_url='authentication:login', redirect_field_name='next')
 def deleteExpense(request, id):
-    expense = Expense.objects.get(pk=id)
+    expense = Expense.objects.get(pk=id, user=request.user)
     expense.delete()
     messages.success(request, 'Expense deleted successfully')
 

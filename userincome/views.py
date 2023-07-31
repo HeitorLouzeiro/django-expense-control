@@ -104,7 +104,7 @@ def addIncome(request):
 @login_required(login_url='authentication:login', redirect_field_name='next')
 def editIncome(request, id):
     template_name = 'income/pages/editIncome.html'
-    income = UserIncome.objects.get(pk=id)
+    income = UserIncome.objects.get(pk=id, user=request.user)
     sources = Source.objects.filter(user=request.user)
 
     context = {
@@ -144,7 +144,7 @@ def editIncome(request, id):
 
 @login_required(login_url='authentication:login', redirect_field_name='next')
 def deleteIncome(request, id):
-    income = UserIncome.objects.get(pk=id)
+    income = UserIncome.objects.get(pk=id, user=request.user)
     income.delete()
     messages.success(request, 'Income deleted successfully')
 
