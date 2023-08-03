@@ -7,34 +7,35 @@ const tbody = document.querySelector(".table-body");
 
 tableOutput.style.display = "none";
 
-
 searchField.addEventListener("keyup", (e) => {
-    const searchValue = e.target.value;
+  const searchValue = e.target.value;
 
-    if(searchValue.trim().length > 0){
-        paginationContainer.style.display = "none";
-        console.log("searchValue", searchValue);
-        tbody.innerHTML = "";
-        fetch("search-expenses/", {
-            body: JSON.stringify({ searchText: searchValue }),
-            method: "POST",
-        })
-        .then((res) => res.json())
-        .then((data) => {
-            console.log("data", data);
-            appTable.style.display = "none";
+  if (searchValue.trim().length > 0) {
+    paginationContainer.style.display = "none";
+    // console.log("searchValue", searchValue);
+    fetch("search-expenses/", {
+      body: JSON.stringify({ searchText: searchValue }),
+      method: "POST",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("data", data);
+        appTable.style.display = "none";
 
-            tableOutput.style.display = "block";
+        tableOutput.style.display = "block";
 
-            if(data.length === 0){
-                tableOutput.innerHTML = "No result found";
-            }else{
-                data.forEach((item) => {
-                    // Fazer uma nova solicitação para obter as informações da categoria
-                    fetch(`get-category/${item.category_id}/`)
-                      .then((res) => res.json())
-                      .then((category) => {
-                        tbody.innerHTML += `
+        if (data.length === 0) {
+          tbody.innerHTML = "<tr><td colspan='5'>No result found</td></tr>";
+        } else {
+          const promises = data.map((item) =>
+            fetch(`get-category/${item.category_id}/`).then((res) => res.json())
+          );
+          Promise.all(promises).then((categories) => {
+            let tableRows = "";
+
+            data.forEach((item, index) => {
+              const category = categories[index];
+              tableRows += `
                             <tr>
                               <td>${item.amount}</td>
                               <td>${category.name}</td>
@@ -45,13 +46,15 @@ searchField.addEventListener("keyup", (e) => {
                                 <a href="delete/expense/${item.id}" class="btn btn-danger btn-sm">Delete</a>
                               </td>
                             </tr>`;
-                      });
-                  });
-                }
-              });
-    }else{
-        appTable.style.display = "block";
-        paginationContainer.style.display = "block";
-        tableOutput.style.display = "none";
-    }
+            });
+            tbody.innerHTML = tableRows;
+          });
+        }
+      });
+  } else {
+    appTable.style.display = "block";
+    paginationContainer.style.display = "block";
+    tableOutput.style.display = "none";
+    tbody.innerHTML = "";
+  }
 });
