@@ -19,7 +19,7 @@ searchField.addEventListener("keyup", (e) => {
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log("data", data);
+        // console.log("data", data);
         appTable.style.display = "none";
 
         tableOutput.style.display = "block";
