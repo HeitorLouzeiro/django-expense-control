@@ -34,7 +34,7 @@
   <p align="center">
     <br/>
     <br />
-    <a href="https://bit.ly/expense-control">View Demo</a>
+    <a href="https://bit.ly/control-expense">View Demo</a>
     ·
     <a href="https://github.com/HeitorLouzeiro/django-expense-control/issues">Report Bug</a>
     ·
@@ -78,7 +78,7 @@
 
 This project was created to improve my knowledge in Django, html, css, boostrap, javaScript and added another ability to show results in graphs with chartjs, in addition to training different ways of working with django, where I overcame the difficulties of using chartjs and I worked on new ways of working with django using Django's Views classes, along with JavaScript validation, importing data from a json file and saving it in the database, exporting data to CSV and Excel files, with account activation and password recovery via email.
 
-* [Expense-control](https://bit.ly/expense-control)
+* [Expense-control](https://bit.ly/control-expense)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
